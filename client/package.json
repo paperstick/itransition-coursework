@@ -1,0 +1,81 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.1",
+    "@types/react": "^17.0.3",
+    "axios": "^0.21.1",
+    "bootstrap": "^4.6.0",
+    "connect-ensure-login": "^0.1.1",
+    "font-awesome": "^4.7.0",
+    "http-proxy-middleware": "^1.0.6",
+    "i18next": "^19.9.1",
+    "lunr": "^2.3.9",
+    "lunr-languages": "^1.4.0",
+    "react": "^17.0.1",
+    "react-beautiful-dnd": "^13.0.0",
+    "react-bootstrap": "^1.5.0",
+    "react-bootstrap-simple-editable": "^1.0.13",
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-bootstrap-table2-paginator": "^2.1.2",
+    "react-bootstrap-typeahead": "^5.1.4",
+    "react-contenteditable": "^3.3.5",
+    "react-dom": "^17.0.1",
+    "react-i18next": "^11.8.8",
+    "react-icons": "^4.2.0",
+    "react-markdown": "^5.0.3",
+    "react-mde": "^11.0.6",
+    "react-rating": "^2.0.5",
+    "react-rating-stars-component": "^2.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.3",
+    "react-select": "^4.1.0",
+    "react-sortablejs": "^6.0.0",
+    "react-star-rating-component": "^1.4.1",
+    "react-table": "^7.6.3",
+    "react-tagcloud": "^2.0.0",
+    "remark-gfm": "^1.0.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.3",
+    "simple-react-comments": "^1.1.0",
+    "sortablejs": "^1.13.0",
+    "styled-components": "^4.4.1",
+    "web-vitals": "^1.1.0",
+    "ws": "^7.4.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/bootstrap-select": "^1.13.1",
+    "@types/sortablejs": "^1.10.6",
+    "nodemon": "^2.0.7"
+  }
+}
