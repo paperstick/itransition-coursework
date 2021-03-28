@@ -6,6 +6,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import { BsX } from "react-icons/bs";
 import axios from 'axios';
 import { withRouter } from "react-router";
+import { FormattedMessage } from "react-intl";
 
 class Profile extends Component {
   constructor() {
@@ -43,30 +44,29 @@ class Profile extends Component {
   deleteBook(id) {
     const ID = id;
     axios
-      .post("/book/deleteBook", {ID})
+      .post("/book/deleteBook", { ID })
       .then(response => {
         this.setState({
           books: this.state.books.filter(book => book.id !== ID)
         })
       });
-    
   }
 
   getUserData() {
     axios
       .get("/user/userData")
       .then(response => {
-				if (response.data.status !== 'error') {
-					this.setState({
+        if (response.data.status !== 'error') {
+          this.setState({
             id: response.data.id,
             username: response.data.username,
             email: response.data.email,
             role: response.data.role
-					}, () => this.setState({ isLoading: false }));
-				} else {
+          }, () => this.setState({ isLoading: false }));
+        } else {
           this.setState({ isLoading: false })
         }
-			})
+      })
   }
 
   getProfileData() {
@@ -103,37 +103,62 @@ class Profile extends Component {
     }
 
     if (!isLoading && !this.state.profileId) {
-      return  <div>
-                <h3 className="mt-5 text-center">
-                  This user doesn't exist
+      return <div>
+        <h3 className="mt-5 text-center">
+          This user doesn't exist
                 </h3>
-              </div>
+      </div>
     }
 
     const columns = [
       {
         dataField: "title",
-        text: "Title",
+        text:
+          <FormattedMessage
+            id="titleProfile"
+            defaultMessage="Title"
+          />
+        ,
         sort: true
       },
       {
         dataField: "genre",
-        text: "Genre"
+        text:
+          <FormattedMessage
+            id="genreProfile"
+            defaultMessage="Genre"
+          />
       },
       {
         dataField: "tags",
-        text: "Tags",
-        formatter: (cell, row) => cell ? cell.map((label, index) => { return (<Badge key={index} className="mr-2 p-2" variant="secondary">{label.label}</Badge>) }) : 'No tags'
+        text:
+          <FormattedMessage
+            id="tagsProfile"
+            defaultMessage="Tags"
+          />,
+        formatter: (cell, row) => cell ? cell.map((label, index) => { return (<Badge key={index} className="mr-2 p-2" variant="secondary">{label.label}</Badge>) })
+          : <FormattedMessage
+            id="noTagsProfile"
+            defaultMessage="No tags"
+          />
       },
       {
         dataField: "rating",
-        text: "Rating",
+        text:
+          <FormattedMessage
+            id="ratingProfile"
+            defaultMessage="Rating"
+          />,
         formatter: (cell, row) => row.ratingCount !== 0 ? (cell / row.ratingCount).toPrecision(2) : 0,
         sort: true
       },
       {
         dataField: "createdAt",
-        text: "Publication Date",
+        text:
+          <FormattedMessage
+            id="createdAtProfile"
+            defaultMessage="Publication date"
+          />,
         formatter: (cell, row) => new Date(cell).toLocaleDateString(),
         sort: true
       },
@@ -141,10 +166,13 @@ class Profile extends Component {
         dataField: "Edit",
         text: "",
         align: 'center',
-        formatter: (cell, row) => 
+        formatter: (cell, row) =>
           <Link to={{ pathname: `/edit/${row.title}`, state: { bookid: row.title } }}>
             <Button variant="secondary">
-              Edit
+              <FormattedMessage
+                id="editProfile"
+                defaultMessage="Edit"
+              />
             </Button>
           </Link>,
         hidden: (this.state.username === this.state.profileUsername || this.props.role === 'admin') ? false : true
@@ -153,10 +181,13 @@ class Profile extends Component {
         dataField: "View",
         text: "",
         align: 'center',
-        formatter: (cell, row) => 
+        formatter: (cell, row) =>
           <Link to={`/view/${row.title}`}>
             <Button variant="secondary">
-              View
+              <FormattedMessage
+                id="viewProfile"
+                defaultMessage="View"
+              />
             </Button>
           </Link>
       },
@@ -168,7 +199,7 @@ class Profile extends Component {
         hidden: this.state.username === this.state.profileUsername ? false : true
       }
     ]
-    
+
     return (
       <>
         <Container className="container mt-3">
@@ -178,8 +209,11 @@ class Profile extends Component {
               fontWeight: 'bold',
               width: 'auto',
             }}>
-              Username:
-              </div>
+              <FormattedMessage
+                id="usernameProfile"
+                defaultMessage="Username:"
+              />
+            </div>
             <div className="p-1 ml-3">
               <Form.Control type="text" placeholder={this.state.profileUsername} readOnly />
             </div>
@@ -189,8 +223,11 @@ class Profile extends Component {
               fontSize: 24,
               fontWeight: 'bold'
             }}>
-              Email:
-              </div>
+              <FormattedMessage
+                id="emailProfile"
+                defaultMessage="Email:"
+              />
+            </div>
             <div className="p-1 ml-3">
               <Form.Control type="text" placeholder={this.state.profileEmail} readOnly />
             </div>
@@ -201,8 +238,11 @@ class Profile extends Component {
               ? <div className="mt-3 mb-3">
                 <Link to={"/createBook"}>
                   <Button className="shadow-sm" variant="outline-success" >
-                    Create a book
-              </Button>
+                    <FormattedMessage
+                      id="createBookButton"
+                      defaultMessage="Create fandom"
+                    />
+                  </Button>
                 </Link>
               </div>
               : null

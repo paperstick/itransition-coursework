@@ -75,11 +75,11 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 passport.serializeUser(function (user, done) {
-  done(null, { id: user.id, username: user.username, email: user.email, role: user.role, status: user.status });
+  done(null, { id: user.id, username: user.username || user.displayName, email: user.email, role: user.role, status: user.status });
 });
 
 passport.deserializeUser(function (user, done) {
-  done(null, user);
+  done(null, user)
 });
 
 const port = process.env.PORT || 5000;

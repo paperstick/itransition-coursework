@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { FormattedMessage } from "react-intl";
 
 axios.defaults.withCredentials = true;
 
@@ -37,21 +38,37 @@ class Register extends Component {
 		return (
 			<div className="register">
 				<form>
-					<h3 className="mb-3 text-center">Sign Up</h3>
+					<h3 className="mb-3 text-center">
+						<FormattedMessage
+							id="signUp"
+						/>
+					</h3>
 					<div className="container">
 						<div className="mb-3 mt-5 row justify-content-center">
-							<label className="col-2 form-label">Username</label>
-							<input type="text" className="col-3 form-control" placeholder="Enter username" name="username" onChange={this.handleInputChange} />
+							<label className="col-2 form-label">
+								<FormattedMessage
+									id="username"
+								/>
+							</label>
+							<input type="text" className="col-3 form-control" name="username" onChange={this.handleInputChange} />
 						</div>
 
 						<div className="mb-3 row justify-content-center">
-							<label className="col-2 form-label">Email address</label>
-							<input type="email" className="col-3 form-control" placeholder="name@example.com" name="email" onChange={this.handleInputChange} />
+							<label className="col-2 form-label">
+								<FormattedMessage
+									id="email"
+								/>
+							</label>
+							<input type="email" className="col-3 form-control" name="email" onChange={this.handleInputChange} />
 						</div>
 
 						<div className="row justify-content-center">
-							<label className="col-2 form-label">Password</label>
-							<input type="password" className="col-3 form-control" placeholder="Enter password" name="password" onChange={this.handleInputChange} />
+							<label className="col-2 form-label">
+								<FormattedMessage
+									id="password"
+								/>
+							</label>
+							<input type="password" className="col-3 form-control" name="password" onChange={this.handleInputChange} />
 						</div>
 						<div className="mt-5 row justify-content-center">
 							<button type="button" onClick={this.onClickRegister} className="btn btn-outline-primary">Submit</button>

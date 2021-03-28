@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from 'react-router-dom';
 import { Toast } from "react-bootstrap"
 import axios from "axios";
+import { FormattedMessage } from "react-intl";
 
 axios.defaults.withCredentials = true;
 
@@ -16,6 +17,9 @@ class Login extends Component {
 			}
 		};
 		this.onClickLogin = this.onClickLogin.bind(this);
+		this.onClickLoginTwitter = this.onClickLoginTwitter.bind(this);
+		this.onClickLoginVK = this.onClickLoginVK.bind(this);
+		this.onClickLoginGoogle = this.onClickLoginGoogle.bind(this);
 	};
 
 	handleInputChange = (event) => {
@@ -23,6 +27,18 @@ class Login extends Component {
 			[event.target.name]: event.target.value,
 		});
 	};
+
+	onClickLoginTwitter() {
+		window.location.href = 'https://itransition-coursework.herokuapp.com/user/auth/twitter/callback'
+	}
+
+	onClickLoginVK() {
+		window.location.href = 'https://itransition-coursework.herokuapp.com/user/auth/vkontakte/callback'
+	}
+
+	onClickLoginGoogle() {
+		window.location.href = 'https://itransition-coursework.herokuapp.com/user/auth/google/callback'
+	}
 
 	onClickLogin() {
 		const { username, password } = this.state;
@@ -49,25 +65,59 @@ class Login extends Component {
 		return (
 			<div className="login">
 				{/* <form> */}
-					<h3 className="mb-3 mt-5 text-center">Sign In</h3>
-					<div className="container">
-						<div className="row mb-3 mt-5 justify-content-center">
-							<label className="form-label">Username</label>
-							<input type="text" className="col-6 ml-3 form-control" name="username" placeholder="Enter username" onChange={this.handleInputChange} />
-						</div>
-						<div className="row justify-content-center">
-							<label className="form-label">Password</label>
-							<input type="password" className="col-6 ml-3 form-control" name="password" placeholder="Enter password" onChange={this.handleInputChange} />
-						</div>
-						<div className="row mt-5 justify-content-center">
-							<button type="button" onClick={this.onClickLogin} className="btn btn-outline-primary">Submit</button>
-						</div>
+				<h3 className="mb-3 mt-5 text-center">
+					<FormattedMessage
+						id="signIn"
+					/>
+				</h3>
+				<div className="container">
+					<div className="row mb-3 mt-5 justify-content-center">
+						<label className="form-label">
+							<FormattedMessage
+								id="username"
+							/>
+						</label>
+						<input type="text" className="col-6 ml-3 form-control" name="username" onChange={this.handleInputChange} />
 					</div>
-				{/* </form> */}
+					<div className="row justify-content-center">
+						<label className="form-label">
+							<FormattedMessage
+								id="password"
+							/>
+						</label>
+						<input type="password" className="col-6 ml-3 form-control" name="password" onChange={this.handleInputChange} />
+					</div>
+					<div className="row mt-5 justify-content-center">
+						<button type="button" onClick={this.onClickLogin} className="btn btn-outline-primary">
+							<FormattedMessage
+								id="logIn"
+							/>
+						</button>
+					</div>
+					<div className="row mt-5 justify-content-center">
+						<button type="button" onClick={this.onClickLoginTwitter} className="btn btn-primary">
+							<FormattedMessage
+								id="logInTwitter"
+							/>
+						</button>
+						<button type="button" onClick={this.onClickLoginVK} className="ml-2 btn btn-info">
+							<FormattedMessage
+								id="logInVK"
+							/>
+						</button>
+						<button type="button" onClick={this.onClickLoginGoogle} className="ml-2 btn btn-danger">
+							<FormattedMessage
+								id="logInGoogle"
+							/>
+						</button>
+					</div>
+				</div>
 				<h3 className="mt-5 text-center">
 					<Link to="/register" className="register_link">
-						Create an account
-        		</Link>
+						<FormattedMessage
+							id="createAccount"
+						/>
+					</Link>
 				</h3>
 				<div>
 					<Toast
@@ -91,7 +141,9 @@ class Login extends Component {
 					>
 						<Toast.Header>
 							<strong>
-								Username or password is wrong
+								<FormattedMessage 
+									id="wrongInfo"
+								/>
 							</strong>
 						</Toast.Header>
 					</Toast>

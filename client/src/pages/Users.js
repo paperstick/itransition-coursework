@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
 import BootstrapTable from 'react-bootstrap-table-next';
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { Alert } from 'react-bootstrap';
-import columns from '../data/columns'
+import { FormattedMessage } from "react-intl";
 
 axios.defaults.withCredentials = true;
 
@@ -154,27 +154,89 @@ class Users extends Component {
 	};
 
 	render() {
+		const columns = [
+			{
+				"dataField": "id",
+				"text": "ID"
+			},
+			{
+				"dataField": "username",
+				"text":
+					<FormattedMessage
+						id="usernameTable"
+					/>,
+				"formatter": (cell, row) => <Link to={`/profile/${cell}`}> {cell} </Link>
+			},
+			{
+				"dataField": "email",
+				"text":
+					<FormattedMessage
+						id="emailTable"
+					/>,
+			},
+			{
+				"dataField": "createdAt",
+				"text":
+					<FormattedMessage
+						id="registrationDate"
+					/>,
+				"formatter": (cell, row) => new Date(cell).toLocaleDateString()
+			},
+			{
+				"dataField": "role",
+				"text":
+					<FormattedMessage
+						id="roleTable"
+					/>,
+			},
+			{
+				"dataField": "status",
+				"text":
+					<FormattedMessage
+						id="statusTable"
+					/>
+			}
+		]
+
 		return (
 			<div className="container mt-3">
 				<Alert show={this.state.alert.block} variant="danger">
 					<p>
-						Users are blocked
+						<FormattedMessage
+							id="blockAlert"
+						/>
 					</p>
 				</Alert>
 				<Alert show={this.state.alert.unblock} variant="danger">
 					<p>
-						Users are unblocked
+						<FormattedMessage
+							id="unblockAlert"
+						/>
 					</p>
 				</Alert>
 				<Alert show={this.state.alert.delete} variant="danger">
 					<p>
-						Users are deleted
+						<FormattedMessage
+							id="deleteAlert"
+						/>
 					</p>
 				</Alert>
 				<div className="btn-group mb-3" role="group">
-					<button onClick={this.blockUsers} type="button" className="btn btn-outline-primary">Block</button>
-					<button onClick={this.unblockUsers} type="button" className="btn btn-outline-primary">Unblock</button>
-					<button onClick={this.deleteUsers} type="button" className="btn btn-outline-danger">Delete</button>
+					<button onClick={this.blockUsers} type="button" className="btn btn-outline-primary">
+						<FormattedMessage
+							id="blockButton"
+						/>
+					</button>
+					<button onClick={this.unblockUsers} type="button" className="btn btn-outline-primary">
+						<FormattedMessage
+							id="unblockButton"
+						/>
+					</button>
+					<button onClick={this.deleteUsers} type="button" className="btn btn-outline-danger">
+						<FormattedMessage
+							id="deleteButton"
+						/>
+					</button>
 				</div>
 				<BootstrapTable
 					keyField='id'

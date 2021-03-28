@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { Comment, Form, Button } from 'semantic-ui-react'
+import { FormattedMessage } from "react-intl";
 import 'semantic-ui-css/components/comment.min.css'
 import 'semantic-ui-css/components/form.min.css'
 import 'semantic-ui-css/components/button.min.css'
@@ -16,7 +17,7 @@ class CommentsSection extends Component {
   }
 
   // ws = new WebSocket(`ws://${process.env.ORIGINAL_URL || "localhost:5000"}/${this.props.bookId}`)
-  ws = new WebSocket(window.location.origin.replace(/^http/, 'ws')+`/${this.props.bookId}`)
+  ws = new WebSocket(window.location.origin.replace(/^http/, 'ws') + `/${this.props.bookId}`)
 
   handleInputChange = (event) => {
     event.preventDefault();
@@ -36,7 +37,7 @@ class CommentsSection extends Component {
     this.ws.onclose = () => {
       console.log('Disconnected from server')
       this.setState({
-        ws: new WebSocket(window.location.origin.replace(/^http/, 'ws')+`/${this.props.bookId}`),
+        ws: new WebSocket(window.location.origin.replace(/^http/, 'ws') + `/${this.props.bookId}`),
         // ws: new WebSocket(`ws://${process.env.ORIGINAL_URL || "localhost:5000"}/${this.props.bookId}`),
       })
     }
@@ -86,7 +87,12 @@ class CommentsSection extends Component {
             <Button
               ws={this.ws}
               onClick={() => this.addReply()}
-              content='Add Reply'
+              content={
+                <FormattedMessage
+                  id="addReply"
+                  defaultMessage="Add reply"
+                />
+              }
               labelPosition='left'
               icon='edit'
               size='small'

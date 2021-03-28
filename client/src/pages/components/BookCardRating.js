@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { Link } from 'react-router-dom';
 import ReactStars from "react-rating-stars-component";
-//import { Card } from 'react-bootstrap';
 
 class BookCardRating extends Component {
   render() {

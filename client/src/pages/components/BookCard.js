@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from "react-intl";
 
 class BookCard extends Component {
   render() {
@@ -16,7 +17,12 @@ class BookCard extends Component {
           <p className="card-text">{this.props.description}</p>
         </div>
         <div className="card-footer">
-          <small className="text-muted">Last updated {new Date(this.props.updatedAt).toLocaleDateString()}</small>
+          <small className="text-muted">
+            <FormattedMessage
+              id="lastUpdatedFooter"
+              defaultMessage="Last updated"
+            />
+            {new Date(this.props.updatedAt).toLocaleDateString()}</small>
         </div>
       </div>
     )

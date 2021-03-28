@@ -8,8 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import ReactMde from "react-mde";
 import axios from 'axios';
 import Select from 'react-select'
-//import tags from '../data/tags';
-import genres from '../data/genres';
+import { FormattedMessage } from "react-intl";
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import "react-mde/lib/styles/css/react-mde-all.css";
 
@@ -159,6 +158,12 @@ class CreateBook extends Component {
 	deleteChapter = id => {
 		const chapters = this.state.chapters.filter((chapter) => chapter.chapterId !== id);
 		this.setState({ chapters: chapters });
+		if (this.state.editMode) {
+			const bookId = this.state.bookId;
+			const chapterId = id;
+			axios
+				.post("/book/deleteChapter", { bookId, chapterId });
+		}
 	}
 
 	componentDidMount() {
@@ -201,18 +206,18 @@ class CreateBook extends Component {
 		axios.post('/book/updateBook', {
 			author, authorId, tags, genre, desc, title, bookId, chapters
 		})
-		.then((response) => { });
+			.then((response) => { });
 		this.props.history.push(`/view/${title}`);
 	};
 
 	getTags() {
 		axios.get('/book/getTags')
-		.then((response) => {
-			response.data.map(tag => {
-				if(tag.tags) {(tag.tags.map((entry) => { delete entry['customOption']; this.setState(state => ({ allTags: [...state.allTags, entry] })); return entry }))}
-				return tag; 
-			})
-		});
+			.then((response) => {
+				response.data.map(tag => {
+					if (tag.tags) { (tag.tags.map((entry) => { delete entry['customOption']; this.setState(state => ({ allTags: [...state.allTags, entry] })); return entry })) }
+					return tag;
+				})
+			});
 	}
 
 	render() {
@@ -225,14 +230,82 @@ class CreateBook extends Component {
 			</div>;
 		}
 
+		const genres = [
+			{
+				value: 'fantasy',
+				label:
+					<FormattedMessage
+						id="fantasy"
+					/>
+			},
+			{
+				value: 'action',
+				label:
+					<FormattedMessage
+						id="action"
+					/>
+			},
+			{
+				value: 'adventure',
+				label:
+					<FormattedMessage
+						id="adventure"
+					/>
+			},
+			{
+				value: 'detective',
+				label:
+					<FormattedMessage
+						id="detective"
+					/>
+			},
+			{
+				value: 'romance',
+				label:
+					<FormattedMessage
+						id="romance"
+					/>
+			},
+			{
+				value: 'sci-fi',
+				label:
+					<FormattedMessage
+						id="sci-fi"
+					/>
+			},
+			{
+				value: 'horror',
+				label:
+					<FormattedMessage
+						id="horror"
+					/>
+			},
+			{
+				value: 'thriller',
+				label:
+					<FormattedMessage
+						id="thriller"
+					/>
+			},
+			{
+				value: 'erotic',
+				label:
+					<FormattedMessage
+						id="erotic"
+					/>
+			},
+		]
+
 		return (
 			<>
 				<div className="mt-4">
 					<Form>
 						<Form.Group as={Row}>
 							<Form.Label column sm={2}>
-								Title
-						</Form.Label>
+								<FormattedMessage
+									id="titleViewer"
+								/>
+							</Form.Label>
 							<Col sm={6}>
 								<Form.Control
 									value={this.state.title}
@@ -244,8 +317,10 @@ class CreateBook extends Component {
 
 						<Form.Group as={Row}>
 							<Form.Label column sm={2}>
-								Description
-						</Form.Label>
+								<FormattedMessage
+									id="descViewer"
+								/>
+							</Form.Label>
 							<Col sm={6}>
 								<Form.Control
 									as="textarea"
@@ -259,21 +334,26 @@ class CreateBook extends Component {
 
 						<Form.Group as={Row}>
 							<Form.Label column sm={2}>
-								Tags
-						</Form.Label>
+								<FormattedMessage
+									id="tagsViewer"
+								/>
+							</Form.Label>
 							<Col sm={6}>
 								<Fragment>
 									<Typeahead
 										{...this.state}
 										allowNew={true}
 										highlightOnlyResult={false}
-										newSelectionPrefix="Add a new tag: "
+										newSelectionPrefix={
+											<FormattedMessage
+												id="addTag"
+											/>
+										}
 										id="tags-token"
 										defaultSelected={this.state.tags ? this.state.tags : []}
 										options={this.state.allTags.length > 0 ? unique(this.state.allTags) : []}
 										labelKey="value"
 										onChange={(tags) => this.setState({ tags })}
-										placeholder="Start typing..."
 										renderToken={(option, { onRemove }, index) => {
 											return (
 												<Token key={index} option={option} onRemove={onRemove}>
@@ -288,12 +368,13 @@ class CreateBook extends Component {
 
 						<Form.Group as={Row}>
 							<Form.Label column sm={2}>
-								Genre
-						</Form.Label>
+								<FormattedMessage
+									id="genreViewer"
+								/>
+							</Form.Label>
 							<Col sm={6}>
 								<Select
-									defaultValue={{value: "default", label: this.state.genre}}
-									//value={this.state.genre}
+									defaultValue={{ value: "default", label: this.state.genre }}
 									onChange={(genre) => this.setState({ genre })}
 									isSearchable={false}
 									options={genres}

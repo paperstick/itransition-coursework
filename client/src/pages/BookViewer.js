@@ -6,6 +6,7 @@ import axios from 'axios';
 import BookInfo from "./components/BookInfo";
 import CommentsSection from "./components/CommentsSection";
 import { withRouter } from "react-router";
+import { FormattedMessage } from "react-intl";
 import "react-mde/lib/styles/css/react-mde-all.css";
 
 axios.defaults.withCredentials = true;
@@ -75,12 +76,22 @@ class BookViewer extends Component {
 	pushChapters = () => {
 		let chapters = [];
 		if (this.state.book.Chapters) {
-			this.state.book.Chapters.map((chapter, index) => {
-				chapters.push(
-					<Pagination.Item onClick={() => { this.setActivePage(index); this.setState({ comments: false }) }} key={index}>{index + 1}</Pagination.Item>
-				)
-				return chapters
-			})
+			this.state.book.Chapters
+				.sort((a, b) => {
+					if (a.chapterId > b.chapterId) {
+						return 1;
+					}
+					if (a.chapterId < b.chapterId) {
+						return -1;
+					}
+					return 0;
+				})
+				.map((chapter, index) => {
+					chapters.push(
+						<Pagination.Item onClick={() => { this.setActivePage(index); this.setState({ comments: false }) }} key={index}>{index + 1}</Pagination.Item>
+					)
+					return chapters
+				})
 		}
 		return chapters;
 	}
@@ -90,15 +101,6 @@ class BookViewer extends Component {
 			this.setState({
 				rating: value
 			})
-			// this.setState(prevState => ({
-			// 	book:
-			// 	{
-			// 		...prevState.book,
-			// 		rating: this.state.editable ? prevState.book.rating + value : prevState.book.rating,
-			// 		ratingCount: this.state.editable ? prevState.book.ratingCount + 1 : prevState.book.ratingCount,
-			// 	},
-			// 	editable: false
-			// }))
 		} else {
 			console.log("You have to login to set a rating.")
 		}
@@ -135,8 +137,10 @@ class BookViewer extends Component {
 		if (!this.state.book) {
 			return <div>
 				<h3 className="mt-5 text-center">
-					No book found.
-								</h3>
+					<FormattedMessage
+						id="noBook"
+					/>
+				</h3>
 			</div>
 		}
 
@@ -144,24 +148,42 @@ class BookViewer extends Component {
 			<>
 				<Container className="container">
 					<BookInfo
-						label={"Title:"}
+						label={
+							<FormattedMessage
+								id="titleViewer"
+							/>
+						}
 						value={this.state.book.title}
 					/>
 					<BookInfo
-						label={"Author:"}
+						label={
+							<FormattedMessage
+								id="authorViewer"
+							/>
+						}
 						value={this.state.book.author}
 					/>
 					<BookInfo
-						label={"Description:"}
+						label={
+							<FormattedMessage
+								id="descViewer"
+							/>
+						}
 						value={this.state.book.description}
 					/>
 					<BookInfo
-						label={"Genre:"}
+						label={
+							<FormattedMessage
+								id="genreViewer"
+							/>
+						}
 						value={this.state.book.genre}
 					/>
 					<div className="row mt-1">
 						<div className="p-1 mr-5">
-							Tags:
+							<FormattedMessage
+								id="tagsViewer"
+							/>
 						</div>
 						{this.state.book.tags
 							? this.state.book.tags.map((tag, index) => {
@@ -174,19 +196,19 @@ class BookViewer extends Component {
 					</div>
 					<div className="row mt-1">
 						<div className="p-1 mr-5">
-							Rating:
-						</div>
-						{/* {this.state.book.rating || this.state.book.rating === 0 ? */}
-							<ReactStars
-								value={this.state.book.rating / this.state.book.ratingCount}
-								count={5}
-								edit={(this.props.user && this.state.editable) ? true : false}
-								onChange={this.setRating}
-								isHalf={true}
-								size={24}
-								activeColor="#ffd700"
+							<FormattedMessage
+								id="ratingViewer"
 							/>
-						{/* } */}
+						</div>
+						<ReactStars
+							value={this.state.book.rating / this.state.book.ratingCount}
+							count={5}
+							edit={(this.props.user && this.state.editable) ? true : false}
+							onChange={this.setRating}
+							isHalf={true}
+							size={24}
+							activeColor="#ffd700"
+						/>
 						<span className="ml-3 mt-2">{this.state.book.rating ? (this.state.book.rating / this.state.book.ratingCount).toPrecision(2) : 0}</span>
 						<Button
 							className="ml-3 p-1"
@@ -200,36 +222,45 @@ class BookViewer extends Component {
 									},
 									editable: false
 								}), () => this.setRatingBook())
-							} 
+							}
 							variant="outline-success"
 						>
-							Submit
+							<FormattedMessage
+								id="setRatingViewer"
+							/>
 						</Button>
 					</div>
-				<div className="row mt-1">
-					<div className="p-1 mr-5">
-						Chapters:
+					<div className="row mt-1">
+						<div className="p-1 mr-5">
+							<FormattedMessage
+								id="chaptersViewer"
+							/>
 						</div>
-					<Pagination>
-						{this.pushChapters()}
-						<Pagination.Item onClick={() => { this.setState({ comments: true }) }}>Comments</Pagination.Item>
-					</Pagination>
-				</div>
-				{this.state.comments
-					? <CommentsSection
-						username={this.props.user}
-						userId={this.props.userId}
-						bookId={this.state.book.id}
-					/>
-					: null}
-				{this.state.activePage !== ""
-					? <div className="row mt-5 ">
-						<ReactMarkdown>
-							{this.state.book.Chapters[parseInt(this.state.activePage)].text}
-						</ReactMarkdown>
+						<Pagination>
+							{this.pushChapters()}
+							<Pagination.Item onClick={() => { this.setState(prevState => ({ comments: prevState.comments === false ? true : false })) }}>
+								<FormattedMessage
+									id="commentsViewer"
+								/>
+							</Pagination.Item>
+						</Pagination>
 					</div>
-					: null}
-			</Container>
+					{this.state.comments
+						? <CommentsSection
+							username={this.props.user}
+							userId={this.props.userId}
+							bookId={this.state.book.id}
+						/>
+						: null
+					}
+					{this.state.activePage !== ""
+						? <div className="row mt-5 ">
+							<ReactMarkdown>
+								{this.state.book.Chapters[parseInt(this.state.activePage)].text}
+							</ReactMarkdown>
+						</div>
+						: null}
+				</Container>
 			</>
 		);
 	}

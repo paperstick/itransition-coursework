@@ -1,6 +1,10 @@
 const crypto = require('crypto');
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
+const VKontakteStrategy = require('passport-vkontakte').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const User = require('../models').User;
 const Book = require('../models').Book;
 const Comment = require('../models').Comment;
@@ -26,18 +30,123 @@ passport.use(new LocalStrategy({
   }
 ));
 
+passport.use(new TwitterStrategy({
+  consumerKey: process.env.TWITTER_CONSUMER_KEY,
+  consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+  callbackURL: "https://itransition-coursework.herokuapp.com/user/auth/twitter/callback"
+},
+  function (token, tokenSecret, profile, cb) {
+    //console.log(profile);
+    User.findOrCreate({
+      where: {
+        username: profile.username
+      },
+      defaults: {
+        username: profile.username,
+        email: "example@gmail.com",
+        role: "user"
+      }
+    })
+    return cb(null, profile);
+  }
+));
+
+router.get('/auth/twitter',
+  passport.authenticate('twitter')
+);
+
+router.get('/auth/twitter/callback',
+  passport.authenticate('twitter', { failureRedirect: 'https://itransition-coursework.herokuapp.com/login' }),
+  function (req, res) {
+    res.redirect('https://itransition-coursework.herokuapp.com');
+  });
+
+passport.use(new VKontakteStrategy({
+  clientID: process.env.VKONTAKTE_APP_ID,
+  clientSecret: process.env.VKONTAKTE_APP_SECRET,
+  callbackURL: "https://itransition-coursework.herokuapp.com/user/auth/vkontakte/callback",
+  scope: ['email'],
+  profileFields: ['email']
+},
+  function (accessToken, refreshToken, params, profile, done) {
+    User.findOrCreate({
+      where: {
+        username: profile.username
+      },
+      defaults: {
+        username: profile.username,
+        email: params.email,
+        role: "user"
+      }
+    })
+    return done(null, profile);
+  }
+));
+
+router.get('/auth/vkontakte',
+  passport.authenticate('vkontakte', { scope: ['email'] })
+);
+
+router.get('/auth/vkontakte/callback',
+  passport.authenticate('vkontakte', { failureRedirect: 'https://itransition-coursework.herokuapp.com/login' }),
+  function (req, res) {
+    res.redirect('https://itransition-coursework.herokuapp.com');
+  });
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "https://itransition-coursework.herokuapp.com/user/auth/google/callback",
+  scope: ['profile', 'email'],
+},
+  function (accessToken, refreshToken, profile, done) {
+    User.findOrCreate({
+      where: {
+        username: profile.displayName
+      },
+      defaults: {
+        username: profile.displayName,
+        email: profile.emails[0].value,
+        role: "user"
+      }
+    })
+    return done(null, profile);
+  }
+));
+
+router.get('/auth/google',
+  passport.authenticate('google', {
+    scope: ["profile", "email"]
+  })
+);
+
+router.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: 'https://itransition-coursework.herokuapp.com/login' }),
+  function (req, res) {
+    res.redirect('https://itransition-coursework.herokuapp.com');
+  });
+
+
 function isValidEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
 
 router.post('/register', async function (req, res, next) {
-  var salt = crypto.randomBytes(64).toString('hex');
-  var password = crypto.pbkdf2Sync(req.body.password, salt, 10000, 64, 'sha512').toString('base64');
+  if (!req.body.username) {
+    return res.json({ status: 'error', message: 'You have to provide a username.' });
+  }
 
   if (!isValidEmail(req.body.email)) {
     return res.json({ status: 'error', message: 'Email address not formed correctly.' });
   }
+
+  if (!req.body.password) {
+    return res.json({ status: 'error', message: 'You have to provide a password.' });
+  }
+
+  var salt = crypto.randomBytes(64).toString('hex');
+  var password = crypto.pbkdf2Sync(req.body.password, salt, 10000, 64, 'sha512').toString('base64');
 
   try {
     var user = await User.create({
@@ -116,7 +225,7 @@ router.get('/userData',
     if (req.user === undefined) {
       res.json({});
     } else {
-      const username = req.user.username
+      const username = req.user.username || req.user.displayName
       let user = await User.findOne({
         where: {
           username: username,

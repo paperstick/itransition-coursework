@@ -129,7 +129,6 @@ router.post('/setRating', async (req, res) => {
     },
   })
     .then((data) => {
-      console.log(data)
       if (data) {
         Rating.update({
           rating: req.body.rating,
@@ -245,7 +244,6 @@ router.get('/userBooks', async (req, res) => {
     }
   })
     .then((data) => {
-      console.log(data)
       res.send(data);
     })
     .catch((err) => {
@@ -274,8 +272,21 @@ router.get('/openBook', async (req, res) => {
     });
 })
 
+router.post("/deleteChapter", async (req, res) => {
+  await Chapter.destroy({
+    where: {
+      chapterId: req.body.chapterId,
+      BookId: req.body.bookId,
+    }
+  })
+  try {
+    res.status(200).json({ message: 'Success' })
+  } catch {
+    res.status(500).json({ message: 'Deleting data failed.' });
+  }
+})
+
 router.post("/deleteBook", async (req, res) => {
-  console.log(req.body.ID)
   await Book.destroy({
     where: {
       id: req.body.ID,
